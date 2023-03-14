@@ -103,6 +103,33 @@ static void reset_lcd(st7789_dev_t *dev)
 	dev->ll->delay_ms(50);
 }
 
+static void set_address_window(st7789_dev_t *dev,
+							   uint16_t x0, uint16_t y0,
+							   uint16_t x1, uint16_t y1)
+{
+	uint16_t x_start = x0 + dev->x_shift;
+	uint16_t x_end = x1 + dev->x_shift;
+	uint16_t y_start = y0 + dev->y_shift;
+	uint16_t y_end = y1 + dev->y_shift;
+	
+	/* Column Address set */
+	write_command(dev, ST7789_CASET); 
+	{
+		uint8_t data[] = { x_start >> 8, x_start & 0xFF, x_end >> 8, x_end & 0xFF };
+		write_data(dev, data, sizeof(data));
+	}
+
+	/* Row Address set */
+	write_command(dev, ST7789_RASET);
+	{
+		uint8_t data[] = { y_start >> 8, y_start & 0xFF, y_end >> 8, y_end & 0xFF };
+		write_data(dev, data, sizeof(data));
+	}
+
+	/* Write to RAM */
+	write_command(dev, ST7789_RAMWR);
+}
+
 void st7789_init(st7789_dev_t *dev,
 				 st7789_ll_t *ll,
 				 uint16_t width,
@@ -114,6 +141,11 @@ void st7789_init(st7789_dev_t *dev,
 	}
 
 	dev->ll = ll;
+	dev->width = width;
+	dev->heigh = heigh;
+	dev->rotation = rotation;
+	dev->x_shift = 0;
+	dev->y_shift = 0;
 
 	reset_lcd(dev);
 
@@ -178,7 +210,22 @@ void st7789_init(st7789_dev_t *dev,
 
 	dev->ll->delay_ms(50);
 
-	/* Fill with Black */
+	/* Fill with color */
+	st7789_fill_color(dev, RED);
+}
+
+void st7789_fill_color(st7789_dev_t *dev, uint16_t color)
+{
+	uint16_t i, j;
+
+	set_address_window(dev, 0, 0, dev->width - 1, dev->heigh - 1);
+
+	for (i = 0; i < dev->width; i++) {
+		for (j = 0; j < dev->heigh; j++) {
+			uint8_t data[] = { color >> 8, color & 0xFF };
+			write_data(dev, data, sizeof(data));
+		}
+	}
 
 }
 

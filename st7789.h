@@ -38,12 +38,15 @@ typedef struct
 {
 	uint16_t width;
 	uint16_t heigh;
+	uint16_t x_shift;
+	uint16_t y_shift;
 	uint8_t rotation;
 	st7789_ll_t *ll;
 } st7789_dev_t;
 
 void st7789_init(st7789_dev_t *dev, st7789_ll_t *ll,
 				 uint16_t width, uint16_t heigh, uint32_t rotation);
+void st7789_fill_color(st7789_dev_t *dev, uint16_t color);
 void st7789_set_pixel(st7789_dev_t *dev, uint16_t x, uint16_t y, uint16_t color);
 
 #ifdef __cplusplus
