@@ -8,6 +8,29 @@
 extern "C" {
 #endif
 
+/* Colors in RGB565 format */
+#define ST7789_WHITE_RGB565			(uint16_t)(0xFFFF)
+#define ST7789_BLACK_RGB565			(uint16_t)(0x0000)
+#define ST7789_BLUE_RGB565			(uint16_t)(0x001F)
+#define ST7789_RED_RGB565			(uint16_t)(0xF800)
+#define ST7789_MAGENTA_RGB565	 	(uint16_t)(0xF81F)
+#define ST7789_GREEN_RGB565			(uint16_t)(0x07E0)
+#define ST7789_CYAN_RGB565			(uint16_t)(0x7FFF)
+#define ST7789_YELLOW_RGB565		(uint16_t)(0xFFE0)
+#define ST7789_GRAY_RGB565			(uint16_t)(0x8430)
+#define ST7789_BRED_RGB565			(uint16_t)(0xF81F)
+#define ST7789_GRED_RGB565			(uint16_t)(0xFFE0)
+#define ST7789_GBLUE_RGB565			(uint16_t)(0x07FF)
+#define ST7789_BROWN_RGB565			(uint16_t)(0xBC40)
+#define ST7789_BRRED_RGB565			(uint16_t)(0xFC07)
+#define ST7789_DARKBLUE_RGB565		(uint16_t)(0x01CF)
+#define ST7789_LIGHTBLUE_RGB565		(uint16_t)(0x7D7C)
+#define ST7789_GRAYBLUE_RGB565		(uint16_t)(0x5458)
+#define ST7789_LIGHTGREEN_RGB565	(uint16_t)(0x841F)
+#define ST7789_LGRAY_RGB565			(uint16_t)(0xC618)
+#define ST7789_LGRAYBLUE_RGB565		(uint16_t)(0xA651)
+#define ST7789_LBBLUE_RGB565		(uint16_t)(0x2B12)
+
 /* Low Level functions which must be implemented by user */
 typedef struct
 {

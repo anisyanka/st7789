@@ -1,28 +1,5 @@
 #include "st7789.h"
 
-/* Colors in RGB565 format */
-#define WHITE		(uint16_t)(0xFFFF)
-#define BLACK		(uint16_t)(0x0000)
-#define BLUE		(uint16_t)(0x001F)
-#define RED			(uint16_t)(0xF800)
-#define MAGENTA 	(uint16_t)(0xF81F)
-#define GREEN		(uint16_t)(0x07E0)
-#define CYAN		(uint16_t)(0x7FFF)
-#define YELLOW		(uint16_t)(0xFFE0)
-#define GRAY		(uint16_t)(0x8430)
-#define BRED		(uint16_t)(0xF81F)
-#define GRED		(uint16_t)(0xFFE0)
-#define GBLUE		(uint16_t)(0x07FF)
-#define BROWN		(uint16_t)(0xBC40)
-#define BRRED		(uint16_t)(0xFC07)
-#define DARKBLUE	(uint16_t)(0x01CF)
-#define LIGHTBLUE	(uint16_t)(0x7D7C)
-#define GRAYBLUE	(uint16_t)(0x5458)
-#define LIGHTGREEN	(uint16_t)(0x841F)
-#define LGRAY		(uint16_t)(0xC618)
-#define LGRAYBLUE	(uint16_t)(0xA651)
-#define LBBLUE		(uint16_t)(0x2B12)
-
 /* Control registers and constant codes */
 #define ST7789_NOP     0x00
 #define ST7789_SWRESET 0x01
@@ -211,7 +188,7 @@ void st7789_init(st7789_dev_t *dev,
 	dev->ll->delay_ms(50);
 
 	/* Fill with color */
-	st7789_fill_color(dev, RED);
+	st7789_fill_color(dev, ST7789_WHITE_RGB565);
 }
 
 void st7789_fill_color(st7789_dev_t *dev, uint16_t color)
