@@ -8,6 +8,9 @@
 extern "C" {
 #endif
 
+#define ST7789_LCD_240x320 1
+#define ST7789_LCD_ROTATION 0
+
 /* Colors in RGB565 format */
 #define ST7789_WHITE_RGB565			(uint16_t)(0xFFFF)
 #define ST7789_BLACK_RGB565			(uint16_t)(0x0000)
