@@ -12,7 +12,7 @@ C_INCLUDE_FILES = st7789.h
 CFLAGS = -mcpu=cortex-m3 -mthumb $(C_DEFS) -Wall 
 
 all: $(C_INCLUDE_FILES)
-	$(CC) $(CFLAGS) -c $(C_SOURCES)
+	$(CC) $(CFLAGS) -c $(C_SOURCES) -DST7789_LCD_240x320 -DST7789_LCD_ROTATION=0
 
 clean:
 	rm -rf *.o

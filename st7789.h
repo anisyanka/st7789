@@ -8,9 +8,6 @@
 extern "C" {
 #endif
 
-#define ST7789_LCD_240x320 1
-#define ST7789_LCD_ROTATION 0
-
 /* Colors in RGB565 format */
 #define ST7789_WHITE_RGB565			(uint16_t)(0xFFFF)
 #define ST7789_BLACK_RGB565			(uint16_t)(0x0000)
@@ -70,8 +67,7 @@ typedef struct
 	st7789_ll_t *ll;
 } st7789_dev_t;
 
-void st7789_init(st7789_dev_t *dev, st7789_ll_t *ll,
-				 uint16_t width, uint16_t heigh, uint32_t rotation);
+void st7789_init(st7789_dev_t *dev, st7789_ll_t *ll);
 void st7789_fill_color(st7789_dev_t *dev, uint16_t color);
 void st7789_set_pixel(st7789_dev_t *dev, uint16_t x, uint16_t y, uint16_t color);
 

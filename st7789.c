@@ -67,7 +67,7 @@ typedef enum {
 	CMD_COLOR_MODE_18bit = 0x66,
 } lcd_cmds;
 
-#ifdef ST7789_LCD_135x240
+#if defined(ST7789_LCD_135x240)
   #if (ST7789_LCD_ROTATION == 0) || (ST7789_LCD_ROTATION == 2)
     #define ST7789_LCD_WIDTH  135
     #define ST7789_LCD_HEIGHT 240
@@ -75,10 +75,10 @@ typedef enum {
     #define ST7789_LCD_WIDTH  240
     #define ST7789_LCD_HEIGHT 135
    #endif
-#elif defined ST7789_LCD_240x240
+#elif defined(ST7789_LCD_240x240)
   #define ST7789_LCD_WIDTH  240
   #define ST7789_LCD_HEIGHT 240
-#elif defined ST7789_LCD_240x280
+#elif defined(ST7789_LCD_240x280)
   #if (ST7789_LCD_ROTATION == 0) || (ST7789_LCD_ROTATION == 2)
     #define ST7789_LCD_WIDTH  240
     #define ST7789_LCD_HEIGHT 280
@@ -86,7 +86,7 @@ typedef enum {
     #define ST7789_LCD_WIDTH  280
     #define ST7789_LCD_HEIGHT 240
   #endif
-#elif defined ST7789_LCD_240x320
+#elif defined (ST7789_LCD_240x320)
   #if (ST7789_LCD_ROTATION == 0) || (ST7789_LCD_ROTATION == 2)
     #define ST7789_LCD_WIDTH  240
     #define ST7789_LCD_HEIGHT 320
@@ -94,20 +94,22 @@ typedef enum {
     #define ST7789_LCD_WIDTH  320
     #define ST7789_LCD_HEIGHT 240
   #endif
-#elif
+#else
   #error "Set display type in build flags"
 #endif
 
-#if ST7789_LCD_ROTATION == 0
-  #define ROTATION_CMD (CMD_MADCTL_MX | CMD_MADCTL_MY | CMD_MADCTL_RGB)
-#elif ST7789_LCD_ROTATION == 1
-  #define ROTATION_CMD (CMD_MADCTL_MY | CMD_MADCTL_MV | CMD_MADCTL_RGB)
-#elif ST7789_LCD_ROTATION == 2
-  #define ROTATION_CMD (CMD_MADCTL_RGB)
-#elif ST7789_LCD_ROTATION == 3
-  #define ROTATION_CMD (CMD_MADCTL_MX | CMD_MADCTL_MV | CMD_MADCTL_RGB)
-#elif
+#ifndef ST7789_LCD_ROTATION
   #error "Set rotation in build flags"
+#endif
+
+#if (ST7789_LCD_ROTATION == 0)
+  #define ROTATION_CMD (CMD_MADCTL_MX | CMD_MADCTL_MY | CMD_MADCTL_RGB)
+#elif (ST7789_LCD_ROTATION == 1)
+  #define ROTATION_CMD (CMD_MADCTL_MY | CMD_MADCTL_MV | CMD_MADCTL_RGB)
+#elif (ST7789_LCD_ROTATION == 2)
+  #define ROTATION_CMD (CMD_MADCTL_RGB)
+#elif (ST7789_LCD_ROTATION == 3)
+  #define ROTATION_CMD (CMD_MADCTL_MX | CMD_MADCTL_MV | CMD_MADCTL_RGB)
 #endif
 
 static const uint8_t init_cmd[] = {
@@ -198,20 +200,16 @@ static void set_address_window(st7789_dev_t *dev,
 	}
 }
 
-void st7789_init(st7789_dev_t *dev,
-				 st7789_ll_t *ll,
-				 uint16_t width,
-				 uint16_t heigh,
-				 uint32_t rotation)
+void st7789_init(st7789_dev_t *dev, st7789_ll_t *ll)
 {
 	if (!dev || !ll) {
 		return;
 	}
 
 	dev->ll = ll;
-	dev->width = width;
-	dev->heigh = heigh;
-	dev->rotation = rotation;
+	dev->width = ST7789_LCD_WIDTH;
+	dev->heigh = ST7789_LCD_HEIGHT;
+	dev->rotation = ST7789_LCD_ROTATION;
 	dev->x_shift = 0;
 	dev->y_shift = 0;
 
