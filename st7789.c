@@ -127,7 +127,7 @@ static const uint8_t init_cmd[] = {
 	1,  CMD_MADCTL,  ROTATION_CMD,
 	14, CMD_GMCTRP1, 0xD0, 0x04, 0x0D, 0x11, 0x13, 0x2B, 0x3F, 0x54, 0x4C, 0x18, 0x0D, 0x0B, 0x1F, 0x23,
 	14, CMD_GMCTRN1, 0xD0, 0x04, 0x0C, 0x11, 0x13, 0x2C, 0x3F, 0x44, 0x51, 0x2F, 0x1F, 0x1F, 0x20, 0x23,
-	0,  CMD_INVON,
+	0,  CMD_INVOFF,
 	0,  CMD_NORON
 };
 
@@ -222,9 +222,6 @@ void st7789_init(st7789_dev_t *dev,
 		i += init_cmd[i] + 2;
 	}
 
-	/* Clear sreen */
-	st7789_fill_color(dev, ST7789_BLACK_RGB565);
-
 	/* Enable power */
 	write_command(dev, CMD_DISPON);
 }
@@ -245,5 +242,12 @@ void st7789_fill_color(st7789_dev_t *dev, uint16_t color)
 
 void st7789_set_pixel(st7789_dev_t *dev, uint16_t x, uint16_t y, uint16_t color)
 {
-	return;
+	if ((x < 0) || (x > dev->width - 1) || (y < 0) || (y > dev->heigh - 1)) {
+		return;
+	}
+
+	uint8_t data[2] = {color >> 8, color & 0xFF};
+
+	set_address_window(dev, x, y, x, y);
+	write_data(dev, data, sizeof(data));
 }
