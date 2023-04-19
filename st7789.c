@@ -171,7 +171,7 @@ static void reset_lcd(st7789_dev_t *dev)
 	dev->ll->delay_ms(200);
 }
 
-static void set_address_window(st7789_dev_t *dev,
+void st7789_set_address_window(st7789_dev_t *dev,
 							   uint16_t x0, uint16_t y0,
 							   uint16_t x1, uint16_t y1)
 {
@@ -228,7 +228,7 @@ void st7789_fill_color(st7789_dev_t *dev, uint16_t color)
 {
 	uint16_t i, j;
 
-	set_address_window(dev, 0, 0, dev->width - 1, dev->heigh - 1);
+	st7789_set_address_window(dev, 0, 0, dev->width - 1, dev->heigh - 1);
 
 	for (i = 0; i < dev->width; i++) {
 		for (j = 0; j < dev->heigh; j++) {
@@ -246,6 +246,6 @@ void st7789_set_pixel(st7789_dev_t *dev, uint16_t x, uint16_t y, uint16_t color)
 
 	uint8_t data[2] = {color >> 8, color & 0xFF};
 
-	set_address_window(dev, x, y, x, y);
+	st7789_set_address_window(dev, x, y, x, y);
 	write_data(dev, data, sizeof(data));
 }

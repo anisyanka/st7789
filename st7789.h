@@ -70,7 +70,8 @@ typedef struct
 void st7789_init(st7789_dev_t *dev, st7789_ll_t *ll);
 void st7789_fill_color(st7789_dev_t *dev, uint16_t color);
 void st7789_set_pixel(st7789_dev_t *dev, uint16_t x, uint16_t y, uint16_t color);
-
+void st7789_set_address_window(st7789_dev_t *dev, uint16_t x0, uint16_t y0,
+							   uint16_t x1, uint16_t y1);
 #ifdef __cplusplus
 }
 #endif
