@@ -226,8 +226,15 @@ void st7789_init(st7789_dev_t *dev, st7789_ll_t *ll)
 
 void st7789_fill_color(st7789_dev_t *dev, uint16_t color)
 {
+	uint16_t i, j;
+
 	set_address_window(dev, 0, 0, dev->width - 1, dev->heigh - 1);
-	write_data16(dev, &color, dev->width * dev->heigh);
+
+	for (i = 0; i < dev->width; i++) {
+		for (j = 0; j < dev->heigh; j++) {
+			write_data16(dev, &color, 1);
+		}
+	}
 }
 
 void st7789_set_pixel(st7789_dev_t *dev, uint16_t x, uint16_t y, uint16_t color)
