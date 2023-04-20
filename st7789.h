@@ -55,6 +55,9 @@ typedef struct
 
 	/* SPI data transfer */
 	void (*spi_send_data)(uint8_t *buf, size_t len);
+
+	/* SPI data transfer in 16 bit frame mode */
+	void (*spi_send_data16)(uint16_t *buf, size_t len);
 } st7789_ll_t;
 
 typedef struct
@@ -70,8 +73,10 @@ typedef struct
 void st7789_init(st7789_dev_t *dev, st7789_ll_t *ll);
 void st7789_fill_color(st7789_dev_t *dev, uint16_t color);
 void st7789_set_pixel(st7789_dev_t *dev, uint16_t x, uint16_t y, uint16_t color);
-void st7789_set_address_window(st7789_dev_t *dev, uint16_t x0, uint16_t y0,
-							   uint16_t x1, uint16_t y1);
+void st7789_fill_area_with_raw_data(st7789_dev_t *dev,
+									uint16_t x0, uint16_t y0,
+									uint16_t x1, uint16_t y1,
+									uint16_t *color_data, size_t len);
 #ifdef __cplusplus
 }
 #endif

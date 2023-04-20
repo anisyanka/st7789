@@ -141,7 +141,7 @@ static void write_command(st7789_dev_t *dev, uint8_t cmd)
 	dev->ll->cs_pin_set();
 }
 
-static void write_command_with_data(st7789_dev_t *dev, uint8_t *cmd, uint8_t argc)
+static void write_command_with_data8(st7789_dev_t *dev, uint8_t *cmd, uint8_t argc)
 {
 	dev->ll->cs_pin_reset();
 	dev->ll->dc_pin_reset();
@@ -153,11 +153,11 @@ static void write_command_with_data(st7789_dev_t *dev, uint8_t *cmd, uint8_t arg
 	dev->ll->cs_pin_set();
 }
 
-static void write_data(st7789_dev_t *dev, uint8_t *data, size_t len)
+static void write_data16(st7789_dev_t *dev, uint16_t *data, size_t len)
 {
 	dev->ll->cs_pin_reset();
 	dev->ll->dc_pin_set();
-	dev->ll->spi_send_data(data, len);
+	dev->ll->spi_send_data16(data, len);
 	dev->ll->cs_pin_set();
 }
 
@@ -171,7 +171,7 @@ static void reset_lcd(st7789_dev_t *dev)
 	dev->ll->delay_ms(200);
 }
 
-void st7789_set_address_window(st7789_dev_t *dev,
+static void set_address_window(st7789_dev_t *dev,
 							   uint16_t x0, uint16_t y0,
 							   uint16_t x1, uint16_t y1)
 {
@@ -184,19 +184,19 @@ void st7789_set_address_window(st7789_dev_t *dev,
 	/* Column Address set */
 	{
 		uint8_t cmd[] = { CMD_CASET, x_start >> 8, x_start & 0xFF, x_end >> 8, x_end & 0xFF };
-		write_command_with_data(dev, cmd, sizeof(cmd) - 1);
+		write_command_with_data8(dev, cmd, sizeof(cmd) - 1);
 	}
 
 	/* Row Address set */
 	{
 		uint8_t cmd[] = { CMD_RASET, y_start >> 8, y_start & 0xFF, y_end >> 8, y_end & 0xFF };
-		write_command_with_data(dev, cmd, sizeof(cmd) - 1);
+		write_command_with_data8(dev, cmd, sizeof(cmd) - 1);
 	}
 
 	/* Write to RAM */
 	{
 		uint8_t cmd[] = { CMD_RAMWR };
-		write_command_with_data(dev, cmd, sizeof(cmd) - 1);
+		write_command_with_data8(dev, cmd, sizeof(cmd) - 1);
 	}
 }
 
@@ -216,7 +216,7 @@ void st7789_init(st7789_dev_t *dev, st7789_ll_t *ll)
 	reset_lcd(dev);
 
 	for (uint16_t i = 0; i < sizeof(init_cmd); ) {
-		write_command_with_data(dev, (uint8_t*)&init_cmd[i + 1], init_cmd[i]);
+		write_command_with_data8(dev, (uint8_t*)&init_cmd[i + 1], init_cmd[i]);
 		i += init_cmd[i] + 2;
 	}
 
@@ -226,16 +226,8 @@ void st7789_init(st7789_dev_t *dev, st7789_ll_t *ll)
 
 void st7789_fill_color(st7789_dev_t *dev, uint16_t color)
 {
-	uint16_t i, j;
-
-	st7789_set_address_window(dev, 0, 0, dev->width - 1, dev->heigh - 1);
-
-	for (i = 0; i < dev->width; i++) {
-		for (j = 0; j < dev->heigh; j++) {
-			uint8_t data[] = { color >> 8, color & 0xFF };
-			write_data(dev, data, sizeof(data));
-		}
-	}
+	set_address_window(dev, 0, 0, dev->width - 1, dev->heigh - 1);
+	write_data16(dev, &color, dev->width * dev->heigh);
 }
 
 void st7789_set_pixel(st7789_dev_t *dev, uint16_t x, uint16_t y, uint16_t color)
@@ -244,8 +236,15 @@ void st7789_set_pixel(st7789_dev_t *dev, uint16_t x, uint16_t y, uint16_t color)
 		return;
 	}
 
-	uint8_t data[2] = {color >> 8, color & 0xFF};
+	set_address_window(dev, x, y, x, y);
+	write_data16(dev, &color, 1);
+}
 
-	st7789_set_address_window(dev, x, y, x, y);
-	write_data(dev, data, sizeof(data));
+void st7789_fill_area_with_raw_data(st7789_dev_t *dev,
+									uint16_t x0, uint16_t y0,
+									uint16_t x1, uint16_t y1,
+									uint16_t *color_data, size_t len)
+{
+	set_address_window(dev, x0, y0, x1, y1);
+	write_data16(dev, color_data, len);
 }
