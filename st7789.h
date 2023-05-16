@@ -31,6 +31,14 @@ extern "C" {
 #define ST7789_LGRAYBLUE_RGB565		(uint16_t)(0xA651)
 #define ST7789_LBBLUE_RGB565		(uint16_t)(0x2B12)
 
+typedef enum
+{
+	ST7789_ROTATION_0,
+	ST7789_ROTATION_1,
+	ST7789_ROTATION_2,
+	ST7789_ROTATION_3,
+} st7789_rotation_t;
+
 /* Low Level functions which must be implemented by user */
 typedef struct
 {
@@ -77,6 +85,8 @@ void st7789_fill_area_with_raw_data(st7789_dev_t *dev,
 									uint16_t x0, uint16_t y0,
 									uint16_t x1, uint16_t y1,
 									uint16_t *color_data, size_t len);
+void st7789_set_rotation(st7789_dev_t *dev, st7789_rotation_t new_rot);
+
 #ifdef __cplusplus
 }
 #endif

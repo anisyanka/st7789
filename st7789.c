@@ -255,3 +255,34 @@ void st7789_fill_area_with_raw_data(st7789_dev_t *dev,
 	set_address_window(dev, x0, y0, x1, y1);
 	write_data16(dev, color_data, len);
 }
+
+void st7789_set_rotation(st7789_dev_t *dev, st7789_rotation_t new_rot)
+{
+	uint8_t rot_cmd[2] = { [0] = CMD_MADCTL, [1] = 0};
+
+	dev->rotation = new_rot;
+
+	switch (new_rot)
+	{
+	case ST7789_ROTATION_0:
+		rot_cmd[1] = CMD_MADCTL_MX | CMD_MADCTL_MY | CMD_MADCTL_RGB;
+		break;
+
+	case ST7789_ROTATION_1:
+		rot_cmd[1] = CMD_MADCTL_MY | CMD_MADCTL_MV | CMD_MADCTL_RGB;
+		break;
+
+	case ST7789_ROTATION_2:
+		rot_cmd[1] = CMD_MADCTL_RGB;
+		break;
+
+	case ST7789_ROTATION_3:
+		rot_cmd[1] = CMD_MADCTL_MX | CMD_MADCTL_MV | CMD_MADCTL_RGB;
+		break;
+
+	default:
+		break;
+	}
+
+	write_command_with_data8(dev, rot_cmd, 1);
+}
