@@ -62,7 +62,7 @@ typedef struct
 	void (*dc_pin_reset)(void);
 
 	/* SPI data transfer */
-	void (*spi_send_data)(uint8_t *buf, size_t len);
+	void (*spi_send_data8)(uint8_t *buf, size_t len);
 
 	/* SPI data transfer in 16 bit frame mode */
 	void (*spi_send_data16)(uint16_t *buf, size_t len);

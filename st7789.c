@@ -137,7 +137,7 @@ static void write_command(st7789_dev_t *dev, uint8_t cmd)
 {
 	dev->ll->cs_pin_reset();
 	dev->ll->dc_pin_reset();
-	dev->ll->spi_send_data(&cmd, sizeof(cmd));
+	dev->ll->spi_send_data8(&cmd, sizeof(cmd));
 	dev->ll->cs_pin_set();
 }
 
@@ -145,10 +145,10 @@ static void write_command_with_data8(st7789_dev_t *dev, uint8_t *cmd, uint8_t ar
 {
 	dev->ll->cs_pin_reset();
 	dev->ll->dc_pin_reset();
-	dev->ll->spi_send_data(cmd, 1);
+	dev->ll->spi_send_data8(cmd, 1);
 	if (argc) {
 		dev->ll->dc_pin_set();
-		dev->ll->spi_send_data(cmd + 1, argc);
+		dev->ll->spi_send_data8(cmd + 1, argc);
 	}
 	dev->ll->cs_pin_set();
 }
@@ -161,13 +161,21 @@ static void write_data16(st7789_dev_t *dev, uint16_t *data, size_t len)
 	dev->ll->cs_pin_set();
 }
 
-static void reset_lcd(st7789_dev_t *dev)
+static void hw_reset(st7789_dev_t *dev)
 {
 	dev->ll->rst_pin_set();
 	dev->ll->delay_ms(200);
 	dev->ll->rst_pin_reset();
 	dev->ll->delay_ms(200);
 	dev->ll->rst_pin_set();
+	dev->ll->delay_ms(200);
+}
+
+static void sw_reset(st7789_dev_t *dev)
+{
+	uint8_t cmd = CMD_SWRESET;
+
+	write_command_with_data8(dev, &cmd, 0);
 	dev->ll->delay_ms(200);
 }
 
@@ -213,7 +221,8 @@ void st7789_init(st7789_dev_t *dev, st7789_ll_t *ll)
 	dev->x_shift = 0;
 	dev->y_shift = 0;
 
-	reset_lcd(dev);
+	hw_reset(dev);
+	sw_reset(dev);
 
 	for (uint16_t i = 0; i < sizeof(init_cmd); ) {
 		write_command_with_data8(dev, (uint8_t*)&init_cmd[i + 1], init_cmd[i]);
